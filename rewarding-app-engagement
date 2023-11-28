@@ -1,0 +1,50 @@
+import gym
+import numpy as np
+import random
+
+# Define the environment: the app itself
+class WellBeingAppEnv(gym.Env):
+    def __init__(self):
+        self.action_space = gym.spaces.Discrete(2)  # 0: engage, 1: not engage
+        self.observation_space = gym.spaces.Box(low=0, high=100, shape=(2,), dtype=np.float32)  # well-being score, engagement score
+
+    def step(self, action):
+        # Simulate user interaction based on action (engage or not)
+        engagement_score = self.observation_space.sample()[1]  # Randomly sample engagement score for this interaction
+
+        if action:  # User engaged with the app
+            well_being_score = self.observation_space.sample()[0] + engagement_score
+            reward = 1  # Reward for engaging with the app
+        else:  # User did not engage with the app
+            well_being_score = self.observation_space.sample()[0] - engagement_score
+            reward = -1  # Penalty for not engaging with the app
+
+        # Check if well-being goal has been achieved
+        if well_being_score >= 80:
+            done = True
+            reward += 10  # Bonus reward for achieving well-being goal
+        else:
+            done = False
+
+        observation = np.array([well_being_score, engagement_score])
+        return observation, reward, done, {}
+
+# Train a Q-learning agent to maximize rewards for engaging with the app and achieving well-being goals
+env = WellBeingAppEnv()
+agent = QLearningAgent(env)
+
+# Train the agent through multiple episodes
+for episode in range(1000):
+    state = env.reset()
+    done = False
+    total_reward = 0
+
+    while not done:
+        action = agent.act(state)
+        next_state, reward, done, _ = env.step(action)
+        agent.learn(state, action, reward, next_state, done)
+
+        state = next_state
+        total_reward += reward
+
+    print("Episode:", episode, "Total reward:", total_reward)
