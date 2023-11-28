@@ -15,4 +15,4 @@ My project for the Girls Who Code 2023 Leadership Academy is to create a product
 
 ## Disclaimers
 
-This is not complete or fully-fleshed out, so keep that in mind as you read this. My goals in the future is to further develop my design and code for this app.
+This is not complete or fully-fleshed out whatsoever, so keep that in mind as you read this. My goals in the future is to further develop my design and code for this app.
